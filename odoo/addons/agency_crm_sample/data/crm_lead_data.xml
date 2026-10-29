@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Ten opportunities spread across the pipeline. noupdate="1" so that
+        upgrading the module never moves a lead back after it was dragged
+        to another stage in the UI.
+
+        Stage external IDs (see agency_crm/data/crm_stage_data.xml):
+        crm.stage_lead1 New, crm.stage_lead2 Contacted,
+        agency_crm.stage_meeting Meeting, crm.stage_lead3 Proposal Sent,
+        crm.stage_lead4 Won.
+
+        Priority follows the scoring rule of phase 2:
+        budget >= 50,000 -> 3 stars, >= 20,000 -> 2 stars, otherwise 1 star.
+
+        Probability is set per stage so the demo numbers are predictable
+        (otherwise Odoo's predictive lead scoring computes it from history).
+        date_closed is set on the won and lost leads: crm only fills it when
+        an existing lead is marked won or lost, not when one is created so.
+    -->
+    <data noupdate="1">
+        <!-- New -->
+        <record id="lead_al_noor_coffee" model="crm.lead">
+            <field name="name">Online ordering website</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_al_noor_coffee"/>
+            <field name="contact_name">Khalid Al Mansoori</field>
+            <field name="service_type">website</field>
+            <field name="lead_channel">website_form</field>
+            <field name="budget">12000</field>
+            <field name="expected_revenue">12000</field>
+            <field name="priority">1</field>
+            <field name="probability">10</field>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=45)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>We have two branches and want customers to order online and pick up in store. Arabic and English menu.</p></field>
+        </record>
+
+        <record id="lead_bayt_al_hikma" model="crm.lead">
+            <field name="name">Student and course management system</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_bayt_al_hikma"/>
+            <field name="contact_name">Salim Al Busaidi</field>
+            <field name="service_type">erp_crm</field>
+            <field name="lead_channel">website_form</field>
+            <field name="budget">30000</field>
+            <field name="expected_revenue">30000</field>
+            <field name="priority">2</field>
+            <field name="probability">10</field>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=50)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>Registrations, invoices and attendance are in Excel today. We need one system for students, courses and payments.</p></field>
+        </record>
+
+        <!-- Contacted -->
+        <record id="lead_desert_bloom" model="crm.lead">
+            <field name="name">Bilingual e-commerce store</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_desert_bloom"/>
+            <field name="contact_name">Maryam Al Hashimi</field>
+            <field name="service_type">website</field>
+            <field name="lead_channel">whatsapp</field>
+            <field name="budget">25000</field>
+            <field name="expected_revenue">22000</field>
+            <field name="priority">2</field>
+            <field name="probability">25</field>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>We sell on Instagram and want our own online store with local payment and delivery.</p></field>
+        </record>
+
+        <record id="lead_pearl_freight" model="crm.lead">
+            <field name="name">Shipment status automation</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_pearl_freight"/>
+            <field name="contact_name">Omar Farouk</field>
+            <field name="service_type">automation</field>
+            <field name="lead_channel">linkedin</field>
+            <field name="budget">40000</field>
+            <field name="expected_revenue">38000</field>
+            <field name="priority">2</field>
+            <field name="probability">25</field>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=40)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>Our team answers "where is my shipment?" all day. We want automatic WhatsApp and email updates from our tracking system.</p></field>
+        </record>
+
+        <!-- Lost: archived (active = False) with a lost reason. It keeps the
+             stage it was lost in and only shows with the "Lost" filter. -->
+        <record id="lead_saffron_house" model="crm.lead">
+            <field name="name">Restaurant website with menu</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_saffron_house"/>
+            <field name="contact_name">Ali Hasan</field>
+            <field name="service_type">website</field>
+            <field name="lead_channel">whatsapp</field>
+            <field name="budget">8000</field>
+            <field name="expected_revenue">8000</field>
+            <field name="priority">1</field>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="active" eval="False"/>
+            <field name="probability">0</field>
+            <field name="lost_reason_id" ref="crm.lost_reason_1"/>
+            <field name="date_closed" eval="(DateTime.now() - relativedelta(days=12)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="description" type="html"><p>Simple website with our menu and opening hours.</p></field>
+        </record>
+
+        <!-- Meeting -->
+        <record id="lead_gulf_steel" model="crm.lead">
+            <field name="name">ERP for production and inventory</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_gulf_steel"/>
+            <field name="contact_name">Rami Haddad</field>
+            <field name="service_type">erp_crm</field>
+            <field name="lead_channel">referral</field>
+            <field name="budget">120000</field>
+            <field name="expected_revenue">110000</field>
+            <field name="priority">3</field>
+            <field name="probability">40</field>
+            <field name="stage_id" ref="agency_crm.stage_meeting"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=60)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>80 employees, two workshops. We need purchasing, inventory, manufacturing orders and accounting in one place.</p></field>
+        </record>
+
+        <record id="lead_al_mansour_auto" model="crm.lead">
+            <field name="name">Inventory sync between shop and website</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_al_mansour_auto"/>
+            <field name="contact_name">Yousef Al Harbi</field>
+            <field name="service_type">automation</field>
+            <field name="lead_channel">website_form</field>
+            <field name="budget">18000</field>
+            <field name="expected_revenue">18000</field>
+            <field name="priority">1</field>
+            <field name="probability">40</field>
+            <field name="stage_id" ref="agency_crm.stage_meeting"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=25)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>Stock in our POS and on our online store is never the same. We want it synced automatically.</p></field>
+        </record>
+
+        <!-- Proposal Sent -->
+        <record id="lead_al_shifa_clinic" model="crm.lead">
+            <field name="name">Patient booking mobile app</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_al_shifa_clinic"/>
+            <field name="contact_name">Dr. Noura Al Qahtani</field>
+            <field name="service_type">mobile_app</field>
+            <field name="lead_channel">linkedin</field>
+            <field name="budget">65000</field>
+            <field name="expected_revenue">60000</field>
+            <field name="priority">3</field>
+            <field name="probability">60</field>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=20)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>iOS and Android app for appointments, reminders and lab results, connected to our clinic system.</p></field>
+        </record>
+
+        <record id="lead_marina_gate" model="crm.lead">
+            <field name="name">CRM for property leads</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_marina_gate"/>
+            <field name="contact_name">Layla Karim</field>
+            <field name="service_type">erp_crm</field>
+            <field name="lead_channel">linkedin</field>
+            <field name="budget">75000</field>
+            <field name="expected_revenue">70000</field>
+            <field name="priority">3</field>
+            <field name="probability">60</field>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_deadline" eval="(DateTime.today() + relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>Leads come from portals, Instagram and WhatsApp. We need one CRM for 15 brokers with follow-up reminders.</p></field>
+        </record>
+
+        <!-- Won -->
+        <record id="lead_oasis_fitness" model="crm.lead">
+            <field name="name">Member app with class booking</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="partner_oasis_fitness"/>
+            <field name="contact_name">Fahad Al Mutairi</field>
+            <field name="service_type">mobile_app</field>
+            <field name="lead_channel">referral</field>
+            <field name="budget">55000</field>
+            <field name="expected_revenue">52000</field>
+            <field name="priority">3</field>
+            <field name="stage_id" ref="crm.stage_lead4"/>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="date_closed" eval="(DateTime.now() - relativedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="date_deadline" eval="(DateTime.today() - relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="description" type="html"><p>Members should book classes, pay memberships and get notifications from one app.</p></field>
+        </record>
+    </data>
+</odoo>

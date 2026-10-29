@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fictional companies. Emails use the reserved .example domain, so
+         nothing is ever delivered to a real address. -->
+    <data noupdate="1">
+        <record id="partner_al_noor_coffee" model="res.partner">
+            <field name="name">Al Noor Specialty Coffee</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">hello@alnoor-coffee.example</field>
+            <field name="phone">+971 4 555 0101</field>
+            <field name="city">Dubai</field>
+            <field name="country_id" ref="base.ae"/>
+        </record>
+
+        <record id="partner_gulf_steel" model="res.partner">
+            <field name="name">Gulf Steel Fabrication LLC</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">info@gulfsteel.example</field>
+            <field name="phone">+971 6 555 0102</field>
+            <field name="city">Sharjah</field>
+            <field name="country_id" ref="base.ae"/>
+        </record>
+
+        <record id="partner_al_shifa_clinic" model="res.partner">
+            <field name="name">Al Shifa Family Clinic</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">contact@alshifa-clinic.example</field>
+            <field name="phone">+966 11 555 0103</field>
+            <field name="city">Riyadh</field>
+            <field name="country_id" ref="base.sa"/>
+        </record>
+
+        <record id="partner_desert_bloom" model="res.partner">
+            <field name="name">Desert Bloom Boutique</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">shop@desertbloom.example</field>
+            <field name="phone">+971 2 555 0104</field>
+            <field name="city">Abu Dhabi</field>
+            <field name="country_id" ref="base.ae"/>
+        </record>
+
+        <record id="partner_pearl_freight" model="res.partner">
+            <field name="name">Pearl Freight &amp; Logistics</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">ops@pearlfreight.example</field>
+            <field name="phone">+974 4 555 0105</field>
+            <field name="city">Doha</field>
+            <field name="country_id" ref="base.qa"/>
+        </record>
+
+        <record id="partner_bayt_al_hikma" model="res.partner">
+            <field name="name">Bayt Al Hikma Training Center</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">admin@baytalhikma.example</field>
+            <field name="phone">+968 24 555 0106</field>
+            <field name="city">Muscat</field>
+            <field name="country_id" ref="base.om"/>
+        </record>
+
+        <record id="partner_oasis_fitness" model="res.partner">
+            <field name="name">Oasis Fitness Club</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">members@oasisfitness.example</field>
+            <field name="phone">+965 2 555 0107</field>
+            <field name="city">Kuwait City</field>
+            <field name="country_id" ref="base.kw"/>
+        </record>
+
+        <record id="partner_saffron_house" model="res.partner">
+            <field name="name">Saffron House Restaurant</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">orders@saffronhouse.example</field>
+            <field name="phone">+973 17 555 0108</field>
+            <field name="city">Manama</field>
+            <field name="country_id" ref="base.bh"/>
+        </record>
+
+        <record id="partner_al_mansour_auto" model="res.partner">
+            <field name="name">Al Mansour Auto Parts</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">sales@almansour-auto.example</field>
+            <field name="phone">+966 12 555 0109</field>
+            <field name="city">Jeddah</field>
+            <field name="country_id" ref="base.sa"/>
+        </record>
+
+        <record id="partner_marina_gate" model="res.partner">
+            <field name="name">Marina Gate Real Estate</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">leads@marinagate.example</field>
+            <field name="phone">+971 4 555 0110</field>
+            <field name="city">Dubai</field>
+            <field name="country_id" ref="base.ae"/>
+        </record>
+    </data>
+</odoo>
