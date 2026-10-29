@@ -1,0 +1,53 @@
+name: agency-crm
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      # Odoo creates its own databases; this is only the maintenance DB.
+      POSTGRES_DB: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:18
+    # odoo:18 is published for linux/arm64 too, so Apple Silicon runs it
+    # natively. Uncomment only if you ever need to force the x86 image.
+    # platform: linux/amd64
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    # Our wrapper renders odoo.conf from env vars, then calls the image's
+    # own /entrypoint.sh. Overriding entrypoint clears the image CMD, so
+    # "odoo" is set again as the default command.
+    entrypoint: ["bash", "/opt/agency/scripts/entrypoint.sh"]
+    command: ["odoo"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ODOO_MASTER_PASSWORD: ${ODOO_MASTER_PASSWORD:?set ODOO_MASTER_PASSWORD in .env}
+      ODOO_ADMIN_PASSWORD: ${ODOO_ADMIN_PASSWORD:?set ODOO_ADMIN_PASSWORD in .env}
+      ODOO_DB: ${ODOO_DB:-agency_crm}
+    ports:
+      # Bound to localhost only: Odoo is not exposed to the local network.
+      - "127.0.0.1:${ODOO_PORT:-8069}:8069"
+    volumes:
+      # Filestore (attachments) and sessions.
+      - odoo-data:/var/lib/odoo
+      # Our custom modules (agency_crm lives here).
+      - ./odoo/addons:/mnt/extra-addons
+      - ./odoo/config:/opt/agency/config:ro
+      - ./odoo/scripts:/opt/agency/scripts:ro
+
+volumes:
+  db-data:
+  odoo-data:
