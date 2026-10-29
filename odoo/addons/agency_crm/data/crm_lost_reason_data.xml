@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Lost reasons that fit an agency. crm already provides
+         "Too expensive" and "We don't have people/skills". -->
+    <data noupdate="1">
+        <record id="lost_reason_other_agency" model="crm.lost.reason">
+            <field name="name">Chose another agency</field>
+        </record>
+        <record id="lost_reason_no_response" model="crm.lost.reason">
+            <field name="name">No response from client</field>
+        </record>
+        <record id="lost_reason_postponed" model="crm.lost.reason">
+            <field name="name">Project postponed</field>
+        </record>
+
+        <!-- Not relevant for a services company: archive it. -->
+        <record id="crm.lost_reason_3" model="crm.lost.reason">
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>

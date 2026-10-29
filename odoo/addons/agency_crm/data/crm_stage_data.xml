@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Pipeline: New -> Contacted -> Meeting -> Proposal Sent -> Won.
+
+        crm ships four stages: New, Qualified, Proposition and Won. We rename
+        them through their external IDs instead of deleting them: crm.stage
+        has no "active" field to archive them, and leads already pointing to
+        a stage block its deletion (stage_id is ondelete="restrict").
+
+        "Lost" is not a stage: a lost lead is archived (active = False) with
+        a lost reason, and keeps the stage it was lost in.
+
+        noupdate="1": applied when the module is installed. Upgrades leave
+        the stages alone, so edits made later in the UI are kept.
+    -->
+    <data noupdate="1">
+        <record id="crm.stage_lead1" model="crm.stage">
+            <field name="name">New</field>
+            <field name="sequence">1</field>
+            <field name="requirements">Request received. Reply within one business day.</field>
+        </record>
+
+        <record id="crm.stage_lead2" model="crm.stage">
+            <field name="name">Contacted</field>
+            <field name="sequence">2</field>
+            <field name="requirements">First call or message done. Needs, budget and timeline are clear.</field>
+        </record>
+
+        <record id="stage_meeting" model="crm.stage">
+            <field name="name">Meeting</field>
+            <field name="sequence">3</field>
+            <field name="requirements">Discovery meeting scheduled or held with the decision maker.</field>
+        </record>
+
+        <record id="crm.stage_lead3" model="crm.stage">
+            <field name="name">Proposal Sent</field>
+            <field name="sequence">4</field>
+            <field name="requirements">Quotation sent. Follow up until the client decides.</field>
+        </record>
+
+        <record id="crm.stage_lead4" model="crm.stage">
+            <field name="name">Won</field>
+            <field name="sequence">5</field>
+            <field name="is_won" eval="True"/>
+        </record>
+    </data>
+</odoo>

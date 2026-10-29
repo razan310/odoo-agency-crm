@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        View inheritance: each record below patches a view from the crm
+        module (inherit_id). An xpath finds an anchor node in the parent view
+        and position says where our nodes go (before, after, inside, ...).
+    -->
+
+    <!-- Form: a "Project Request" section above the notebook. -->
+    <record id="crm_lead_view_form_inherit_agency" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.agency</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group name="agency_project_request" string="Project Request">
+                    <group>
+                        <field name="service_type"/>
+                        <field name="lead_channel"/>
+                    </group>
+                    <group>
+                        <field name="budget" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- List (pipeline list view). -->
+    <record id="crm_case_tree_view_oppor_inherit_agency" model="ir.ui.view">
+        <field name="name">crm.lead.list.opportunity.inherit.agency</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expected_revenue']" position="before">
+                <field name="service_type" optional="show"/>
+                <field name="lead_channel" optional="show"/>
+                <field name="budget" sum="Total Budget" optional="show" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kanban card: service type badge and budget under the customer. -->
+    <record id="crm_case_kanban_view_leads_inherit_agency" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.inherit.agency</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <div class="d-flex flex-wrap align-items-center gap-2 small">
+                    <field name="service_type" widget="badge"/>
+                    <span t-if="record.budget.raw_value" class="text-muted">
+                        Budget: <field name="budget" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search: filters per service type, group by service type / channel. -->
+    <record id="view_crm_case_opportunities_filter_inherit_agency" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity.inherit.agency</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="after">
+                <field name="service_type"/>
+                <field name="lead_channel"/>
+            </xpath>
+            <!-- Filters inside the same separator block are combined with OR. -->
+            <xpath expr="//filter[@name='filter_lost']" position="after">
+                <separator/>
+                <filter string="Website" name="service_website" domain="[('service_type', '=', 'website')]"/>
+                <filter string="Mobile App" name="service_mobile_app" domain="[('service_type', '=', 'mobile_app')]"/>
+                <filter string="ERP / CRM" name="service_erp_crm" domain="[('service_type', '=', 'erp_crm')]"/>
+                <filter string="Automation" name="service_automation" domain="[('service_type', '=', 'automation')]"/>
+                <filter string="Other Service" name="service_other" domain="[('service_type', '=', 'other')]"/>
+            </xpath>
+            <xpath expr="//filter[@name='stage']" position="after">
+                <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type'}"/>
+                <filter string="Channel" name="group_lead_channel" context="{'group_by': 'lead_channel'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
