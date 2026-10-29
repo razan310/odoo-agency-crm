@@ -25,7 +25,7 @@ It is both a learning project and a portfolio piece for agency clients.
 ## Phases
 
 0. Environment (Docker Compose, Makefile) — done
-1. CRM configuration as code: fields, views, stages, demo leads
+1. CRM configuration as code: fields, views, stages, sample leads — done
 2. Automations in module data XML, each with a `TransactionCase` test
 3. Next.js lead capture (EN/AR, zod, typed JSON-RPC client)
 4. Webhook receiver + dashboard
@@ -37,7 +37,8 @@ It is both a learning project and a portfolio piece for agency clients.
 make up              # start; creates the database on first run
 make logs            # follow Odoo logs
 make odoo-shell      # Python shell with `env`
-make update-module   # upgrade agency_crm after changes (MODULE=... to override)
+make update-module   # upgrade our modules after changes (MODULES=agency_crm for one)
+make test            # tests in a throwaway test_agency_crm database
 make reset-db        # drop + recreate the database
 docker compose exec odoo odoo --version
 ```
@@ -53,8 +54,21 @@ docker compose exec odoo odoo --version
   run in `docker compose run --rm odoo odoo ...`, not `exec` (port clash).
 - The `agency_crm` database is created without demo data
   (`--without-demo=all`). Odoo only loads a module's `demo` files when all
-  its dependencies have demo data, so `demo/` files of `agency_crm` will not
-  load into this database.
-- Fresh database: company "My Company", country United States, currency USD,
-  chart of accounts `generic_coa`. Default CRM stages: New, Qualified,
-  Proposition, Won.
+  its dependencies have demo data (`should_have_demo()`), so sample leads
+  live in a separate module, `agency_crm_sample`, as regular `noupdate` data.
+  Uninstalling it removes them (verified).
+- Stage external IDs: `crm.stage_lead1` New, `crm.stage_lead2` Contacted,
+  `agency_crm.stage_meeting` Meeting, `crm.stage_lead3` Proposal Sent,
+  `crm.stage_lead4` Won. crm's stages are renamed, not deleted: `crm.stage`
+  has no `active` field and `crm.lead.stage_id` is `ondelete="restrict"`.
+  Overriding crm's `noupdate` records applies at install only; `-u` skips them.
+- In another module's data file, refs need the full prefix
+  (`agency_crm.stage_meeting`), otherwise they resolve to the current module.
+- crm sets `date_closed` and won/lost probability in `write()`, not `create()`:
+  data creating already-won/lost leads must set `date_closed` itself.
+- `crm.lead.priority` values: `'0'`..`'3'` (stars). Lost = `active=False`,
+  `probability=0`, `lost_reason_id`.
+- `make test` runs `--test-tags /agency_crm,/agency_crm_sample` on a fresh
+  database without demo; a failing test makes it exit non-zero (verified).
+- Fresh database: company "My Company", country United States, currency USD
+  (kept for now; AED/SAR still open), chart of accounts `generic_coa`.
